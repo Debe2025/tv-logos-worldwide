@@ -1,36 +1,48 @@
-name: Daily TV Logo Sync
+name: Daily TV Logos & M3U Update (Multi-Source)
 
+# Trigger daily at 02:00 UTC or manual trigger
 on:
   schedule:
-    - cron: "0 2 * * *"   # Daily at 02:00 UTC
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 jobs:
-  sync:
+  update-logos:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      # Step 2: Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests svglib reportlab beautifulsoup4
 
-      - name: Run logo fetcher
-        run: |
-          python tv-logos-worldwide.py
+      # Step 4: Run the unified multi-source logo + M3U script
+      - name: Generate logos & M3U
+        run: python tv-logos-worldwide.py
 
-      - name: Commit and push changes
+      # Step 5: Commit only changed files
+      - name: Commit & push changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "Daily auto-sync TV logos" || echo "No changes"
-          git push
+
+          # Stage only changes inside tv-logos-worldwide
+          git add tv-logos-worldwide/*
+
+          # Commit only if there are actual changes
+          if ! git diff --cached --quiet; then
+            git commit -m "Daily auto-update: TV logos & M3U"
+            git push
+          else
+            echo "No changes detected, skipping commit."
