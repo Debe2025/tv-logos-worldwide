@@ -1,143 +1,117 @@
-🌍 TV Logos Worldwide – Auto IPTV Logo & M3U Manager
+# tv-logos-worldwide
 
-A fully automated system that fetches global TV channel logos, organizes them by country, converts SVG → PNG without Cairo/DLL issues, matches them to IPTV channels, and injects logos directly into M3U playlists.
+Automated aggregation of worldwide TV channel logos with IPTV playlist generation and Kodi-compatible M3U output.
 
-Designed to run daily via GitHub Actions with zero manual intervention.
+This repository fetches IPTV channels, downloads TV logos from multiple public sources, converts SVG logos to PNG without Cairo dependencies, matches logos to channels, and injects `tvg-logo` entries directly into an M3U playlist.
 
-✨ Features
+The system is designed to run unattended via GitHub Actions.
 
-🌐 Worldwide TV logo aggregation
+---
 
-IPTV-ORG
+## Features
 
-Wikipedia / Wikimedia Commons
+- Automatic IPTV channel fetching
+- Multi-source logo aggregation (iptv-org, Wikimedia, public broadcasters)
+- Country-based logo organization
+- SVG → PNG conversion using svglib (no Cairo / DLLs)
+- Automatic `tvg-logo` injection into M3U playlists
+- Daily scheduled updates via GitHub Actions
+- Kodi IPTV Simple Client compatible
 
-Fallback public logo sources
+---
 
-🗂 Country-by-country logo organization
+## Repository Structure
 
-🔁 SVG → PNG conversion using svglib (no Cairo, no DLLs)
-
-📺 Automatic IPTV channel fetching
-
-🧠 Smart logo matching to channel names
-
-🧩 Auto-inject tvg-logo directly into M3U
-
-⏱ Daily auto-update via GitHub Actions
-
-🧼 Smart commits (only pushes when changes exist)
-
-📁 Repository Structure
 tv-logos-worldwide/
-│
-├── tv-logos-worldwide.py        # Unified daily runner (logos + M3U)
+├── tv-logos-worldwide.py # Main automation script
 ├── tv-logos/
-│   └── countries/
-│       └── CA/
-│           └── CBC.png
-│
+│ └── countries/
+│ └── US/
+│ └── CNN.png
 ├── playlists/
-│   └── output.m3u               # Auto-generated playlist with logos
-│
-├── .github/
-│   └── workflows/
-│       └── daily-update.yml     # GitHub Actions automation
-│
+│ └── output.m3u # Generated M3U with logos
+├── .github/workflows/
+│ └── daily-update.yml
 ├── requirements.txt
 └── README.md
 
-🚀 How It Works (Daily Flow)
+yaml
+Copy code
 
-Fetch IPTV channels automatically
+---
 
-Download logos from multiple public sources
+## Requirements
 
-Normalize & group logos by country
+- Python 3.10+
+- Internet connection
 
-Convert SVG → PNG safely
+Python dependencies:
+- requests
+- svglib
+- reportlab
 
-Match channels ↔ logos intelligently
+---
 
-Inject logos into M3U
+## Usage
 
-Commit & push only if changes exist
+### Local execution (optional)
 
-▶️ Run Locally (Optional)
-1️⃣ Install Python dependencies
+```bash
 pip install -r requirements.txt
-
-2️⃣ Run the unified script
 python tv-logos-worldwide.py
-
-
 Output:
 
-Logos saved under tv-logos/countries/
+bash
+Copy code
+playlists/output.m3u
+Automated Execution (Recommended)
+This repository is intended to run via GitHub Actions.
 
-Playlist saved to playlists/output.m3u
+Executes daily at 02:00 UTC
 
-🤖 GitHub Actions (Recommended)
+Can be triggered manually
 
-The system is designed to run entirely in GitHub Actions.
-
-Daily schedule:
-
-⏰ 02:00 UTC
-
-🖱 Manual trigger available
+Commits changes only when updates are detected
 
 Workflow file:
 
+bash
+Copy code
 .github/workflows/daily-update.yml
+Kodi Configuration
+Playlist URL
+perl
+Copy code
+https://raw.githubusercontent.com/<USERNAME>/tv-logos-worldwide/main/playlists/output.m3u
+Kodi Steps
+Open Kodi
 
+Go to Settings → Add-ons
 
-No local execution required.
+Install PVR IPTV Simple Client
 
-🛡 Why This Project Avoids Cairo
+Configure:
 
-Many logo tools fail on Windows due to:
+Location: Remote path (Internet address)
 
-Missing cairo.dll
+M3U playlist URL: paste the URL above
 
-Broken binary dependencies
+Logos:
 
-This project uses:
+Enable Channel logos from M3U
 
-svglib
+Enable the add-on and restart Kodi
 
-reportlab
+Notes
+Kodi caches logos aggressively; initial logo loading may take time
 
-✔ Pure Python
-✔ Works on Windows, Linux, GitHub Actions
-✔ No system libraries required
+Clear Kodi cache if logo updates do not appear immediately
 
-📌 Use Cases
+No local logo directories are required in Kodi
 
-IPTV apps (Kodi, Tivimate, OTT platforms)
-
-IPTV playlist maintainers
-
-TV metadata aggregation
-
-Logo hosting for M3U providers
-
-📜 License
-
+License
 MIT License
-Free to use, modify, and distribute.
 
-🤝 Contributions
-
-Pull requests are welcome for:
-
-New logo sources
-
-Better channel matching logic
-
-Additional playlist formats
-
-⚠️ Disclaimer
-
-This project does not host streams.
-It only manages logos and metadata for publicly available IPTV playlists.
+Disclaimer
+This repository does not provide or host IPTV streams.
+It manages logos and metadata for publicly available playlists only.
